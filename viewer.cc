@@ -1,5 +1,6 @@
 #include <QtGui/QKeyEvent>
 
+#include "bezier.hh"
 #include "mesh.hh"
 #include "viewer.hh"
 
@@ -7,6 +8,12 @@ Viewer::Viewer(QWidget *parent) : QGLViewer(parent) {
   setSelectRegionWidth(10);
   setSelectRegionHeight(10);
   axes.shown = false;
+}
+
+Viewer::~Viewer() {
+  glDeleteTextures(1, &vis.isophote_texture);
+  glDeleteTextures(1, &vis.environment_texture);
+  glDeleteTextures(1, &vis.slicing_texture);
 }
 
 double Viewer::getCutoffRatio() const {
@@ -67,24 +74,14 @@ bool Viewer::openMesh(const std::string &filename, bool update_view) {
 }
 
 bool Viewer::openBezier(const std::string &filename, bool update_view) {
-  // size_t n, m;
-  // try {
-  //   std::ifstream f(filename.c_str());
-  //   f.exceptions(std::ios::failbit | std::ios::badbit);
-  //   f >> n >> m;
-  //   degree[0] = n++; degree[1] = m++;
-  //   control_points.resize(n * m);
-  //   for (size_t i = 0, index = 0; i < n; ++i)
-  //     for (size_t j = 0; j < m; ++j, ++index)
-  //       f >> control_points[index][0] >> control_points[index][1] >> control_points[index][2];
-  // } catch(std::ifstream::failure &) {
-  //   return false;
-  // }
-  // model_type = ModelType::BEZIER_SURFACE;
-  // last_filename = filename;
-  // updateMesh(update_view);
-  // if (update_view)
-  //   setupCamera();
+  auto surface = std::make_shared<Bezier>(filename);
+  if (!surface->valid())
+    return false;
+  objects.push_back(surface);
+  if (update_view) {
+    updateMeanMinMax();
+    setupCamera();
+  }
   return true;
 }
 
@@ -258,6 +255,18 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
       break;
     } else
     QGLViewer::keyPressEvent(e);
+}
+
+[[maybe_unused]]
+static Vector intersectLines(const Vector &ap, const Vector &ad,
+                             const Vector &bp, const Vector &bd) {
+  // always returns a point on the (ap, ad) line
+  double a = ad.sqrnorm(), b = ad | bd, c = bd.sqrnorm();
+  double d = ad | (ap - bp), e = bd | (ap - bp);
+  if (a * c - b * b < 1.0e-7)
+    return ap;
+  double s = (b * e - c * d) / (a * c - b * b);
+  return ap + s * ad;
 }
 
 void Viewer::mouseMoveEvent(QMouseEvent *e) {

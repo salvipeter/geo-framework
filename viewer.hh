@@ -8,6 +8,7 @@ class Viewer : public QGLViewer {
 
 public:
   explicit Viewer(QWidget *parent);
+  ~Viewer();
 
   double getCutoffRatio() const;
   void setCutoffRatio(double ratio);
