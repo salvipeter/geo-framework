@@ -1,0 +1,7 @@
+*~
+.\#*
+*.stl
+*.ply
+build
+debug
+release
