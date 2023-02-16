@@ -4,8 +4,6 @@
 #include "jet-wrapper.hh"
 #endif
 
-#include <OpenMesh/Core/Mesh/SmartHandles.hh>
-
 Object::Object(std::string filename) : filename(filename) {
 }
 
@@ -65,7 +63,7 @@ void Object::draw(const Visualization &vis) const {
     glDisable(GL_LIGHTING);
     for (auto f : mesh.faces()) {
       glBegin(GL_POLYGON);
-      for (auto v : mesh.fv_range(f))
+      for (auto v : f.vertices())
         glVertex3dv(mesh.point(v).data());
       glEnd();
     }
