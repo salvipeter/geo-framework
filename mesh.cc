@@ -21,8 +21,12 @@ void Mesh::movement(int selected, const Vector &pos) {
 }
 
 void Mesh::update() {
+  Object::update();
 }
 
 bool Mesh::reload() {
-  return OpenMesh::IO::read_mesh(mesh, filename);
+  if (!OpenMesh::IO::read_mesh(mesh, filename))
+    return false;
+  update();
+  return true;
 }

@@ -102,7 +102,7 @@ double Object::meanCurvature(BaseMesh::VertexHandle vh) const {
 
   // Compute triangle strip area
   double vertex_area = 0;
-  for (auto f : mesh.vf_range(v))
+  for (auto f : v.faces())
     vertex_area += mesh.calc_sector_area(f.halfedge());
   vertex_area /= 3.0;
 

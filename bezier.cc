@@ -105,6 +105,7 @@ void Bezier::update() {
       tri.push_back(handles[(i + 1) * resolution + j + 1]);
       mesh.add_face(tri);
     }
+  Object::update();
 }
 
 bool Bezier::reload() {
@@ -121,5 +122,6 @@ bool Bezier::reload() {
   } catch(std::ifstream::failure &) {
     return false;
   }
+  update();
   return true;
 }

@@ -63,9 +63,6 @@ Window::Window(QApplication *parent) :
 }
 
 void Window::open(bool clear_others) {
-  if (clear_others)
-    viewer->deleteObjects();
-
   auto filename =
     QFileDialog::getOpenFileName(this, tr("Open File"), last_directory,
                                  tr("Readable files (*.obj *.ply *.stl *.bzr);;"
@@ -75,6 +72,9 @@ void Window::open(bool clear_others) {
   if(filename.isEmpty())
     return;
   last_directory = QFileInfo(filename).absolutePath();
+
+  if (clear_others)
+    viewer->deleteObjects();
 
   bool ok;
   if (filename.endsWith(".bzr"))

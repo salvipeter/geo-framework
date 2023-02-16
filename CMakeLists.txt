@@ -49,6 +49,7 @@ include_directories(
 
 add_executable(geo-framework
   ${geo_HEADERS_MOC}
+  textures.qrc
   bezier.cc
   main.cc
   mesh.cc
@@ -57,6 +58,14 @@ add_executable(geo-framework
   visualization.cc
   window.cc
   )
+
+if(UNIX)
+  add_custom_command(OUTPUT tags
+    COMMAND etags *.hh *.cc
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  )
+  target_sources(geo-framework PRIVATE tags)
+endif(UNIX)  
 
 target_link_libraries(geo-framework PRIVATE
   ${OPENGL_LIBRARIES}
