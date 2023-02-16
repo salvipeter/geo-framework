@@ -75,32 +75,51 @@ void Object::draw(const Visualization &vis) const {
 }
 
 void Object::update() {
+  update(false, false);
+}
+
+void Object::update(bool own_normal, bool own_mean) {
   mesh.request_face_normals();
   mesh.request_vertex_normals();
   mesh.update_face_normals();
 
 #ifdef USE_JET_FITTING
 
+  if (own_normal && own_mean) {
+    // no need for jet fitting
+    for (auto v : mesh.vertices()) {
+      mesh.set_normal(v, normal(v));
+      mesh.data(v).mean = meanCurvature(v);
+    }
+    return;
+  }
+
   mesh.update_vertex_normals();
   std::vector<Vector> points;
   for (auto v : mesh.vertices())
     points.push_back(mesh.point(v));
-
   auto nearest = JetWrapper::Nearest(points, 20);
 
   for (auto v : mesh.vertices()) {
     auto jet = JetWrapper::fit(mesh.point(v), nearest, 2);
-    if ((mesh.normal(v) | jet.normal) < 0) {
+    bool reverse = (mesh.normal(v) | jet.normal) > 0;
+    if (own_normal)
+      mesh.set_normal(v, normal(v));
+    else
       mesh.set_normal(v, -jet.normal);
+    if (own_mean)
+      mesh.data(v).mean = meanCurvature(v);
+    else
       mesh.data(v).mean = (jet.k_min + jet.k_max) / 2;
-    } else {
-      mesh.set_normal(v, jet.normal);
-      mesh.data(v).mean = -(jet.k_min + jet.k_max) / 2;
-    }
+    if (reverse && !own_normal)
+      mesh.set_normal(v, -mesh.normal(v));
+    if (reverse && !own_mean)
+      mesh.data(v).mean *= -1;
   }
 
 #else // !USE_JET_FITTING
 
+  std::ignore = std::tie(own_normal, own_mean);
   for (auto v : mesh.vertices()) {
     mesh.set_normal(v, normal(v));
     mesh.data(v).mean = meanCurvature(v);
@@ -110,7 +129,6 @@ void Object::update() {
 }
 
 Vector Object::normal(BaseMesh::VertexHandle vh) const {
-  // TODO: jet fitting version
   auto v = OpenMesh::make_smart(vh, &mesh);
   Vector n(0.0, 0.0, 0.0);
   for (auto h : v.incoming_halfedges()) {

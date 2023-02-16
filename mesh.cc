@@ -27,10 +27,6 @@ void Mesh::movement(int selected, const Vector &pos) {
   mesh.set_point(BaseMesh::VertexHandle(selected), pos);
 }
 
-void Mesh::update() {
-  Object::update();
-}
-
 bool Mesh::reload() {
   if (!OpenMesh::IO::read_mesh(mesh, filename))
     return false;
