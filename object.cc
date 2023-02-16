@@ -1,5 +1,9 @@
 #include "object.hh"
 
+#ifdef USE_JET_FITTING
+#include "jet-wrapper.hh"
+#endif
+
 #include <OpenMesh/Core/Mesh/SmartHandles.hh>
 
 Object::Object(std::string filename) : filename(filename) {
@@ -74,10 +78,35 @@ void Object::update() {
   mesh.request_face_normals();
   mesh.request_vertex_normals();
   mesh.update_face_normals();
+
+#ifdef USE_JET_FITTING
+
+  mesh.update_vertex_normals();
+  std::vector<Vector> points;
+  for (auto v : mesh.vertices())
+    points.push_back(mesh.point(v));
+
+  auto nearest = JetWrapper::Nearest(points, 20);
+
+  for (auto v : mesh.vertices()) {
+    auto jet = JetWrapper::fit(mesh.point(v), nearest, 2);
+    if ((mesh.normal(v) | jet.normal) < 0) {
+      mesh.set_normal(v, -jet.normal);
+      mesh.data(v).mean = (jet.k_min + jet.k_max) / 2;
+    } else {
+      mesh.set_normal(v, jet.normal);
+      mesh.data(v).mean = -(jet.k_min + jet.k_max) / 2;
+    }
+  }
+
+#else // !USE_JET_FITTING
+
   for (auto v : mesh.vertices()) {
     mesh.set_normal(v, normal(v));
     mesh.data(v).mean = meanCurvature(v);
   }
+
+#endif // USE_JET_FITTING
 }
 
 Vector Object::normal(BaseMesh::VertexHandle vh) const {

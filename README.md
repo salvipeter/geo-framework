@@ -11,10 +11,6 @@ Added features:
 
 - Better toolchain (CMake integration, Qt 6, OpenMesh 8)
 
-Features to be (re)implemented:
-
-- Normals / curvatures by jet fitting
-
 Removed features:
 
 - Mesh fairing

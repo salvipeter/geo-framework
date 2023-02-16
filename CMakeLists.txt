@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(OpenGL_GL_PREFERENCE LEGACY)
 
 if(WITH_JET_FITTING)
+  find_package(Eigen3 3.3 REQUIRED NO_MODULE)
   find_package(CGAL REQUIRED NO_MODULE)
 endif(WITH_JET_FITTING)
 find_package(OpenGL REQUIRED)
@@ -40,6 +41,7 @@ endif()
 include_directories(
   .
   ${CGAL_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
   ${OpenMesh_INCLUDE_DIR}
   ${Qt6OpenGL_INCLUDE_DIRS}
   ${Qt6Widgets_INCLUDE_DIRS}
@@ -58,6 +60,10 @@ add_executable(geo-framework
   visualization.cc
   window.cc
   )
+
+if(WITH_JET_FITTING)
+  target_sources(geo-framework PRIVATE jet-wrapper.cc)
+endif(WITH_JET_FITTING)
 
 if(UNIX)
   add_custom_command(OUTPUT tags
