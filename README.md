@@ -13,8 +13,6 @@ Added features:
 
 Features to be (re)implemented:
 
-- Moving points
-
 - Normals / curvatures by jet fitting
 
 Removed features:

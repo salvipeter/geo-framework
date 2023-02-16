@@ -134,14 +134,6 @@ void Viewer::draw() {
 }
 
 void Viewer::drawWithNames() {
-  for (size_t i = 0; i < objects.size(); ++i) {
-    if (!axes.shown)
-      glPushName(i);
-    objects[i]->drawWithNames(vis);
-    if (!axes.shown)
-      glPopName();
-  }
-
   if (axes.shown) {
     using qglviewer::Vec;
     const auto &p = Vec(axes.position);
@@ -154,37 +146,75 @@ void Viewer::drawWithNames() {
     glPushName(2);
     drawArrow(p, p + Vec(0.0, 0.0, axes.size), axes.size / 50.0);
     glPopName();
+  } else {
+    for (size_t i = 0; i < objects.size(); ++i) {
+      glPushName(i);
+      objects[i]->drawWithNames(vis);
+      glPopName();
+    }
   }
 }
 
+void Viewer::endSelection(const QPoint &) {
+  glFlush();
+  GLint nbHits = glRenderMode(GL_RENDER);
+  if (nbHits <= 0)
+    setSelectedName(-1);
+  else {
+    const GLuint *ptr = selectBuffer();
+    GLuint names = ptr[0];
+    GLuint zMin = ptr[1];
+    if (names == 2) {
+      selected_object = ptr[3];
+      ptr++;
+    }
+    setSelectedName(ptr[3]);
+    for (int i = 1; i < nbHits; ++i) {
+      ptr += 4;
+      names = ptr[0];
+      if (ptr[1] < zMin) {
+        zMin = ptr[1];
+        if (names == 2) {
+          selected_object = ptr[3];
+          ptr++;
+        }
+        setSelectedName(ptr[3]);
+      } else if (names == 2)
+        ptr++;
+    }
+  }
+}
+
+static Vector toVector(const qglviewer::Vec &v) {
+  return Vector(static_cast<const qreal *>(v));
+}
+
 void Viewer::postSelection(const QPoint &p) {
-  // int sel = selectedName();
-  // if (sel == -1) {
-  //   axes.shown = false;
-  //   return;
-  // }
+  int sel = selectedName();
+  if (sel == -1) {
+    axes.shown = false;
+    return;
+  }
 
-  // if (axes.shown) {
-  //   axes.selected_axis = sel;
-  //   bool found;
-  //   axes.grabbed_pos = camera()->pointUnderPixel(p, found);
-  //   axes.original_pos = axes.position;
-  //   if (!found)
-  //     axes.shown = false;
-  //   return;
-  // }
+  if (axes.shown) {
+    axes.selected_axis = sel;
+    bool found;
+    axes.grabbed_pos = toVector(camera()->pointUnderPixel(p, found));
+    axes.original_pos = axes.position;
+    if (!found)
+      axes.shown = false;
+    return;
+  }
 
-  // selected_vertex = sel;
-  // if (model_type == ModelType::MESH)
-  //   axes.position = Vec(mesh.point(MyMesh::VertexHandle(sel)).data());
-  // if (model_type == ModelType::BEZIER_SURFACE)
-  //   axes.position = control_points[sel];
-  // double depth = camera()->projectedCoordinatesOf(axes.position)[2];
-  // Vec q1 = camera()->unprojectedCoordinatesOf(Vec(0.0, 0.0, depth));
-  // Vec q2 = camera()->unprojectedCoordinatesOf(Vec(width(), height(), depth));
-  // axes.size = (q1 - q2).norm() / 10.0;
-  // axes.shown = true;
-  // axes.selected_axis = -1;
+  using qglviewer::Vec;
+  selected_vertex = sel;
+  axes.position = objects[selected_object]->postSelection(sel);
+  double depth = camera()->projectedCoordinatesOf(Vec(axes.position))[2];
+  Vec q1 = camera()->unprojectedCoordinatesOf(Vec(0.0, 0.0, depth));
+  Vec q2 = camera()->unprojectedCoordinatesOf(Vec(width(), height(), depth));
+  axes.size = (q1 - q2).norm() / 10.0;
+  axes.shown = true;
+  axes.selected_axis = -1;
 }
 
 void Viewer::keyPressEvent(QKeyEvent *e) {
@@ -257,7 +287,6 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
     QGLViewer::keyPressEvent(e);
 }
 
-[[maybe_unused]]
 static Vector intersectLines(const Vector &ap, const Vector &ad,
                              const Vector &bp, const Vector &bd) {
   // always returns a point on the (ap, ad) line
@@ -270,32 +299,30 @@ static Vector intersectLines(const Vector &ap, const Vector &ad,
 }
 
 void Viewer::mouseMoveEvent(QMouseEvent *e) {
-  return QGLViewer::mouseMoveEvent(e);
-  // if (!axes.shown ||
-  //     (axes.selected_axis < 0 && !(e->modifiers() & Qt::ControlModifier)) ||
-  //     !(e->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) ||
-  //     !(e->buttons() & Qt::LeftButton))
-  //   return QGLViewer::mouseMoveEvent(e);
+  if (!axes.shown ||
+      (axes.selected_axis < 0 && !(e->modifiers() & Qt::ControlModifier)) ||
+      !(e->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) ||
+      !(e->buttons() & Qt::LeftButton))
+    return QGLViewer::mouseMoveEvent(e);
 
-  // if (e->modifiers() & Qt::ControlModifier) {
-  //   // move in screen plane
-  //   double depth = camera()->projectedCoordinatesOf(axes.position)[2];
-  //   axes.position = camera()->unprojectedCoordinatesOf(Vec(e->pos().x(), e->pos().y(), depth));
-  // } else {
-  //   Vec from, dir, axis(axes.selected_axis == 0, axes.selected_axis == 1, axes.selected_axis == 2);
-  //   camera()->convertClickToLine(e->pos(), from, dir);
-  //   auto p = intersectLines(axes.grabbed_pos, axis, from, dir);
-  //   float d = (p - axes.grabbed_pos) * axis;
-  //   axes.position[axes.selected_axis] = axes.original_pos[axes.selected_axis] + d;
-  // }
+  using qglviewer::Vec;
+  if (e->modifiers() & Qt::ControlModifier) {
+    // move in screen plane
+    double depth = camera()->projectedCoordinatesOf(Vec(axes.position))[2];
+    auto pos = camera()->unprojectedCoordinatesOf(Vec(e->pos().x(), e->pos().y(), depth));
+    axes.position = toVector(pos);
+  } else {
+    Vec from, dir, axis(axes.selected_axis == 0, axes.selected_axis == 1, axes.selected_axis == 2);
+    camera()->convertClickToLine(e->pos(), from, dir);
+    auto p = intersectLines(axes.grabbed_pos, toVector(axis), toVector(from), toVector(dir));
+    float d = (p - axes.grabbed_pos) | toVector(axis);
+    axes.position[axes.selected_axis] = axes.original_pos[axes.selected_axis] + d;
+  }
 
-  // if (model_type == ModelType::MESH)
-  //   mesh.set_point(MyMesh::VertexHandle(selected_vertex),
-  //                  Vector(static_cast<double *>(axes.position)));
-  // if (model_type == ModelType::BEZIER_SURFACE)
-  //   control_points[selected_vertex] = axes.position;
-  // updateMesh();
-  // update();
+  objects[selected_object]->movement(selected_vertex, axes.position);
+  objects[selected_object]->update();
+  updateMeanMinMax();
+  update();
 }
 
 QString Viewer::helpString() const {

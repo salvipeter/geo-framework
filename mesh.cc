@@ -10,6 +10,13 @@ Mesh::~Mesh() {
 }
 
 void Mesh::drawWithNames(const Visualization &vis) const {
+  if (!vis.show_wireframe)
+    return;
+  for (auto v : mesh.vertices()) {
+    glPushName(v.idx());
+    glRasterPos3dv(mesh.point(v).data());
+    glPopName();
+  }
 }
 
 Vector Mesh::postSelection(int selected) {

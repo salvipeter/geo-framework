@@ -67,6 +67,7 @@ void Object::draw(const Visualization &vis) const {
     }
     glEnable(GL_LIGHTING);
   }
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Object::update() {

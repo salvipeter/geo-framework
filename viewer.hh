@@ -34,6 +34,7 @@ protected:
   virtual void init() override;
   virtual void draw() override;
   virtual void drawWithNames() override;
+  virtual void endSelection(const QPoint &) override;
   virtual void postSelection(const QPoint &p) override;
   virtual void keyPressEvent(QKeyEvent *e) override;
   virtual void mouseMoveEvent(QMouseEvent *e) override;
@@ -47,6 +48,7 @@ private:
   Visualization vis;
 
   int selected_vertex;
+  size_t selected_object;
   struct ModificationAxes {
     bool shown;
     float size;
