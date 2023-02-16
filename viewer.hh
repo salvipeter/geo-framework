@@ -43,10 +43,6 @@ private:
   void updateMeanMinMax();
   void setupCamera();
 
-  //////////////////////
-  // Member variables //
-  //////////////////////
-
   std::vector<std::shared_ptr<Object>> objects;
   Visualization vis;
 
