@@ -9,12 +9,13 @@ public:
   virtual ~Object();
   const BaseMesh &baseMesh() const;
   virtual void draw(const Visualization &vis) const;
-  virtual void drawWithNames() const;
-  virtual void postSelection(int selected);
+  virtual void drawWithNames(const Visualization &vis) const = 0;
+  virtual Vector postSelection(int selected) = 0;
+  virtual void movement(int selected, const Vector &pos) = 0;
   virtual void update();
   virtual Vector normal(BaseMesh::VertexHandle vh) const;
   virtual double meanCurvature(BaseMesh::VertexHandle vh) const;
-  virtual void reload() = 0;
+  virtual bool reload() = 0;
   bool valid() const;
 protected:
   BaseMesh mesh;

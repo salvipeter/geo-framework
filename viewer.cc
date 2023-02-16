@@ -140,7 +140,7 @@ void Viewer::drawWithNames() {
   for (size_t i = 0; i < objects.size(); ++i) {
     if (!axes.shown)
       glPushName(i);
-    objects[i]->drawWithNames();
+    objects[i]->drawWithNames(vis);
     if (!axes.shown)
       glPopName();
   }

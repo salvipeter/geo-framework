@@ -9,15 +9,20 @@ Mesh::Mesh(std::string filename) : Object(filename) {
 Mesh::~Mesh() {
 }
 
-void Mesh::drawWithNames() const {
+void Mesh::drawWithNames(const Visualization &vis) const {
 }
 
-void Mesh::postSelection(int selected) {
+Vector Mesh::postSelection(int selected) {
+  return mesh.point(BaseMesh::VertexHandle(selected));
+}
+
+void Mesh::movement(int selected, const Vector &pos) {
+  mesh.set_point(BaseMesh::VertexHandle(selected), pos);
 }
 
 void Mesh::update() {
 }
 
-void Mesh::reload() {
-  OpenMesh::IO::read_mesh(mesh, filename);
+bool Mesh::reload() {
+  return OpenMesh::IO::read_mesh(mesh, filename);
 }

@@ -49,6 +49,7 @@ include_directories(
 
 add_executable(geo-framework
   ${geo_HEADERS_MOC}
+  bezier.cc
   main.cc
   mesh.cc
   object.cc

@@ -4,9 +4,14 @@
 
 class Bezier : public Object {
 public:
-  virtual void drawWithNames() override;
-  virtual void postSelection(int selected) override;
+  Bezier(std::string filename);
+  virtual ~Bezier();
+  virtual void draw(const Visualization &vis) const override;
+  virtual void drawWithNames(const Visualization &vis) const override;
+  virtual Vector postSelection(int selected) override;
+  virtual void movement(int selected, const Vector &pos) override;
   virtual void update() override;
+  virtual bool reload() override;
 private:
   size_t degree[2];
   std::vector<Vector> control_points;

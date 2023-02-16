@@ -69,12 +69,6 @@ void Object::draw(const Visualization &vis) const {
   }
 }
 
-void Object::drawWithNames() const {
-}
-
-void Object::postSelection(int selected) {
-}
-
 void Object::update() {
   mesh.request_face_normals();
   mesh.request_vertex_normals();
