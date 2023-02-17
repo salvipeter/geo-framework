@@ -7,7 +7,7 @@
 Window::Window(QApplication *parent) :
   QMainWindow(), parent(parent), last_directory(".")
 {
-  setWindowTitle(tr("3D Framework"));
+  setWindowTitle(tr("Geometry Framework"));
   setStatusBar(new QStatusBar);
   progress = new QProgressBar;
   progress->setMinimum(0); progress->setMaximum(100);

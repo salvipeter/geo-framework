@@ -145,6 +145,9 @@ void Viewer::drawWithNames() {
   }
 }
 
+// Same as the default implementation,
+// but when there are 2 names for a hit,
+// the first is treated as the selected object id.
 void Viewer::endSelection(const QPoint &) {
   glFlush();
   GLint nbHits = glRenderMode(GL_RENDER);
@@ -152,16 +155,9 @@ void Viewer::endSelection(const QPoint &) {
     setSelectedName(-1);
   else {
     const GLuint *ptr = selectBuffer();
-    GLuint names = ptr[0];
-    GLuint zMin = ptr[1];
-    if (names == 2) {
-      selected_object = ptr[3];
-      ptr++;
-    }
-    setSelectedName(ptr[3]);
-    for (int i = 1; i < nbHits; ++i) {
-      ptr += 4;
-      names = ptr[0];
+    GLuint zMin = std::numeric_limits<GLuint>::max();
+    for (int i = 0; i < nbHits; ++i, ptr += 4) {
+      GLuint names = ptr[0];
       if (ptr[1] < zMin) {
         zMin = ptr[1];
         if (names == 2) {
@@ -175,7 +171,7 @@ void Viewer::endSelection(const QPoint &) {
   }
 }
 
-static Vector toVector(const qglviewer::Vec &v) {
+static inline Vector toVector(const qglviewer::Vec &v) {
   return Vector(static_cast<const qreal *>(v));
 }
 
@@ -355,8 +351,6 @@ QString Viewer::helpString() const {
 void Viewer::updateMeanMinMax() {
   std::vector<double> mean;
   for (auto o : objects) {
-    if (!o->valid())
-      continue;
     const auto &mesh = o->baseMesh();
     for (auto v : mesh.vertices())
       mean.push_back(mesh.data(v).mean);
