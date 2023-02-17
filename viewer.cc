@@ -61,28 +61,10 @@ void Viewer::deleteObjects() {
   objects.clear();
 }
 
-bool Viewer::openMesh(const std::string &filename, bool update_view) {
-  auto mesh = std::make_shared<Mesh>(filename);
-  if (!mesh->valid())
-    return false;
-  objects.push_back(mesh);
-  if (update_view) {
-    updateMeanMinMax();
-    setupCamera();
-  }
-  return true;
-}
-
-bool Viewer::openBezier(const std::string &filename, bool update_view) {
-  auto surface = std::make_shared<Bezier>(filename);
-  if (!surface->valid())
-    return false;
-  objects.push_back(surface);
-  if (update_view) {
-    updateMeanMinMax();
-    setupCamera();
-  }
-  return true;
+bool Viewer::open(std::string filename) {
+  if (filename.ends_with(".bzr"))
+    return openObject<Bezier>(filename);
+  return openObject<Mesh>(filename);
 }
 
 void Viewer::init() {
@@ -320,7 +302,7 @@ void Viewer::mouseMoveEvent(QMouseEvent *e) {
   }
 
   objects[selected_object]->movement(selected_vertex, axes.position);
-  objects[selected_object]->update();
+  objects[selected_object]->updateBaseMesh();
   updateMeanMinMax();
   update();
 }

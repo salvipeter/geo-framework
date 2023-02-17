@@ -21,9 +21,7 @@ public:
   double getSlicingScaling() const;
   void setSlicingScaling(double scaling);
   void deleteObjects();
-  bool openMesh(const std::string &filename, bool update_view = true);
-  bool openBezier(const std::string &filename, bool update_view = true);
-  bool saveBezier(const std::string &filename);
+  bool open(std::string filename);
 
 signals:
   void startComputation(QString message);
@@ -41,6 +39,7 @@ protected:
   virtual QString helpString() const override;
 
 private:
+  template <typename T> bool openObject(std::string filename);
   void updateMeanMinMax();
   void setupCamera();
 
@@ -56,3 +55,5 @@ private:
     Vector position, grabbed_pos, original_pos;
   } axes;
 };
+
+#include "viewer.inc"

@@ -27,12 +27,12 @@ Window::Window(QApplication *parent) :
   auto openAction = new QAction(tr("&Open"), this);
   openAction->setShortcut(tr("Ctrl+O"));
   openAction->setStatusTip(tr("Load a model from a file"));
-  connect(openAction, &QAction::triggered, [=](){ open(true); });
+  connect(openAction, &QAction::triggered, [this](){ open(true); });
 
   auto importAction = new QAction(tr("&Import"), this);
   importAction->setShortcut(tr("Ctrl+I"));
   importAction->setStatusTip(tr("Import a model from a file"));
-  connect(importAction, &QAction::triggered, this, [=](){ open(false); });
+  connect(importAction, &QAction::triggered, this, [this](){ open(false); });
 
   auto quitAction = new QAction(tr("&Quit"), this);
   quitAction->setShortcut(tr("Ctrl+Q"));
@@ -76,13 +76,7 @@ void Window::open(bool clear_others) {
   if (clear_others)
     viewer->deleteObjects();
 
-  bool ok;
-  if (filename.endsWith(".bzr"))
-    ok = viewer->openBezier(filename.toUtf8().data());
-  else
-    ok = viewer->openMesh(filename.toUtf8().data());
-
-  if (!ok)
+  if (!viewer->open(filename.toUtf8().data()))
     QMessageBox::warning(this, tr("Cannot open file"),
                          tr("Could not open file: ") + filename + ".");
 }

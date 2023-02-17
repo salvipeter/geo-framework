@@ -30,6 +30,6 @@ void Mesh::movement(int selected, const Vector &pos) {
 bool Mesh::reload() {
   if (!OpenMesh::IO::read_mesh(mesh, filename))
     return false;
-  update();
+  updateBaseMesh();
   return true;
 }

@@ -72,11 +72,11 @@ void Object::draw(const Visualization &vis) const {
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Object::update() {
-  update(false, false);
+void Object::updateBaseMesh() {
+  updateBaseMesh(false, false);
 }
 
-void Object::update(bool own_normal, bool own_mean) {
+void Object::updateBaseMesh(bool own_normal, bool own_mean) {
   mesh.request_face_normals();
   mesh.request_vertex_normals();
   mesh.update_face_normals();

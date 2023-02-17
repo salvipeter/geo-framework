@@ -72,7 +72,7 @@ static void bernstein(size_t n, double u, std::vector<double> &coeff) {
   }
 }
 
-void Bezier::update() {
+void Bezier::updateBaseMesh() {
   size_t resolution = 50;
 
   mesh.clear();
@@ -106,7 +106,7 @@ void Bezier::update() {
       tri.push_back(handles[(i + 1) * resolution + j + 1]);
       mesh.add_face(tri);
     }
-  Object::update(false, false);
+  Object::updateBaseMesh(false, false);
 }
 
 bool Bezier::reload() {
@@ -123,6 +123,6 @@ bool Bezier::reload() {
   } catch(std::ifstream::failure &) {
     return false;
   }
-  update();
+  updateBaseMesh();
   return true;
 }

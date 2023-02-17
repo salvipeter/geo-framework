@@ -13,6 +13,7 @@ and read the documentation of the various libraries (see "Dependencies" below).
 
 Dependencies:
 
+- C++20
 - [CMake](https://cmake.org/) >= 3.2
 - [libQGLViewer](http://www.libqglviewer.com/) >= 2.9
 - [OpenMesh](http://www.openmesh.org/) >= 8.1
