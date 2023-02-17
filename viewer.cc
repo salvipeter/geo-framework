@@ -62,9 +62,17 @@ void Viewer::deleteObjects() {
 }
 
 bool Viewer::open(std::string filename) {
+  std::shared_ptr<Object> surface;
   if (filename.ends_with(".bzr"))
-    return openObject<Bezier>(filename);
-  return openObject<Mesh>(filename);
+    surface = std::make_shared<Bezier>(filename);
+  else
+    surface = std::make_shared<Mesh>(filename);
+  if (!surface->valid())
+    return false;
+  objects.push_back(surface);
+  updateMeanMinMax();
+  setupCamera();
+  return true;
 }
 
 void Viewer::init() {

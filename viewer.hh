@@ -39,7 +39,6 @@ protected:
   virtual QString helpString() const override;
 
 private:
-  template <typename T> bool openObject(std::string filename);
   void updateMeanMinMax();
   void setupCamera();
 
@@ -55,5 +54,3 @@ private:
     Vector position, grabbed_pos, original_pos;
   } axes;
 };
-
-#include "viewer.inc"
