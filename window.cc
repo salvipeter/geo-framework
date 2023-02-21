@@ -20,10 +20,6 @@ Window::Window(QApplication *parent) :
   connect(viewer, &Viewer::endComputation, this, &Window::endComputation);
   setCentralWidget(viewer);
 
-  /////////////////////////
-  // Setup actions/menus //
-  /////////////////////////
-
   auto openAction = new QAction(tr("&Open"), this);
   openAction->setShortcut(tr("Ctrl+O"));
   openAction->setStatusTip(tr("Load a model from a file"));
@@ -69,7 +65,7 @@ void Window::open(bool clear_others) {
                                     "Mesh (*.obj *.ply *.stl);;"
                                     "Bézier surface (*.bzr);;"
                                     "All files (*.*)"));
-  if(filename.isEmpty())
+  if (filename.isEmpty())
     return;
   last_directory = QFileInfo(filename).absolutePath();
 
@@ -82,13 +78,6 @@ void Window::open(bool clear_others) {
 }
 
 void Window::setCutoff() {
-  // Memory management options for the dialog:
-  // - on the stack (deleted at the end of the function)
-  // - on the heap with manual delete or std::unique_ptr 
-  // There is also a Qt-controlled automatic deletion by calling
-  //     dlg->setAttribute(Qt::WA_DeleteOnClose);
-  // ... but this could delete sub-widgets too early.
-
   auto dlg = std::make_unique<QDialog>(this);
   auto *hb1    = new QHBoxLayout,
        *hb2    = new QHBoxLayout;
