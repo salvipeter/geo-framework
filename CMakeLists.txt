@@ -42,14 +42,14 @@ include_directories(
   .
   ${CGAL_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  ${OpenMesh_INCLUDE_DIR}
+  ${OPENMESH_INCLUDE_DIR}
   ${Qt6OpenGL_INCLUDE_DIRS}
   ${Qt6Widgets_INCLUDE_DIRS}
   ${Qt6Xml_INCLUDE_DIRS}
   ${QGLVIEWER_INCLUDE_DIR}
   )
 
-add_executable(geo-framework
+add_executable(geo-framework WIN32
   ${geo_HEADERS_MOC}
   textures.qrc
   bezier.cc
@@ -62,7 +62,7 @@ add_executable(geo-framework
   )
 
 if(WITH_JET_FITTING)
-  target_sources(geo-framework PRIVATE jet-wrapper.cc)
+  target_sources(geo-framework PUBLIC jet-wrapper.cc)
 endif(WITH_JET_FITTING)
 
 if(UNIX)
@@ -71,9 +71,9 @@ if(UNIX)
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   )
   target_sources(geo-framework PRIVATE tags)
-endif(UNIX)  
+endif(UNIX)
 
-target_link_libraries(geo-framework PRIVATE
+target_link_libraries(geo-framework PUBLIC
   ${OPENGL_LIBRARIES}
   ${OPENMESH_LIBRARIES}
   Qt6::Core
