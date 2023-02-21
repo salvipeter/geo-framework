@@ -89,7 +89,7 @@ but it should work with other configurations, as well.
 
 To generate a release build, compile both libQGLViewer and OpenMesh in Release mode,
 and in the configuration of this framework, change the library filenames to
-`libOpenMeshCore.lib` and `libQGLViewer2.dll`, respectively.
+`libOpenMeshCore.dll` and `libQGLViewer2.dll`, respectively.
 
 ## Changes
 
