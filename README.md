@@ -43,7 +43,7 @@ and with the same Debug/Release option*.
    Select "Download Qt for open source use", and download the online installer tool.
    You will need to register an email address (free).
    For installation type, select "Qt 6.4 for desktop development" (with MinGW toolchain).
-   This will install the *MinGW* compiler the *CMake* build tool,
+   This will install the *MinGW* compiler, the *CMake* build tool,
    and the *Qt Creator* IDE.
    (If you already have a C++ compiler and want to use that, consider downloading
    a smaller package by selecting "Custom".)
@@ -63,10 +63,12 @@ and with the same Debug/Release option*.
    Press the "Project" button on the left sidebar, and go to "Initial configuration".
    Press the "Add..." button, select "Boolean", and enter "BUILD_APPS".
    Leave its value as "OFF", and press the "Re-configure with Initial Parameters" button.
-   Check the "OPENMESH_BUILD_SHARED" checkbox, and then build.
+   Check the "OPENMESH_BUILD_SHARED" checkbox, press "Run CMake", and then build.
+
    (If you get a "file too big" error, go back to the initial configuration,
    press "Add...", select "String", enter "CMAKE_CXX_FLAGS",
    and set the value "-Wa,-mbig-obj", and try to re-configure and build.)
+
    Close the project.
 
 1. Clone [this project](https://github.com/salvipeter/geo-framework) with git.
