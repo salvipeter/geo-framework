@@ -34,10 +34,6 @@ Note that the *libQGLViewer* library needs to be compiled with Qt6.
 In this guide we will create a debug build using the MinGW compiler and Qt's Creator IDE, 
 but it should work with other configurations, as well.
 
-For Windows compilations, the improtant thing is to remember that
-*all libraries need to be compiled with the same compiler version,
-and with the same Debug/Release option*.
-
 1. Download [Qt](https://www.qt.io/):
 
    Select "Download Qt for open source use", and download the online installer tool.
@@ -80,16 +76,20 @@ and with the same Debug/Release option*.
    
    - `OPENMESH_INCLUDE_DIR` : should be set to the `src` folder of OpenMesh
    
-   - `OPENMESH_LIBRARIES` : should be set to the full path to the `libOpenMeshCored.lib` file
+   - `OPENMESH_LIBRARIES` : should be set to the full path to the `libOpenMeshCored.dll` file
      (which was generated in the `src/OpenMesh/Core` subdirectory of the OpenMesh *build*)
    
    - `QGLVIEWER_INCLUDE_DIR` : should be set to the libQGLViewer source directory
      (something like `libQGLViewer-2.9.1`)
    
-   - `QGLVIEWER_LIBRARY` : should be set to the full path to the `libQGLViewerd2.a` file
+   - `QGLVIEWER_LIBRARY` : should be set to the full path to the `libQGLViewerd2.dll` file
      (which was generated in the `QGLViewer` subdirectory of the libQGLViewer *source*)
 
    Re-configure and build.
+
+To generate a release build, compile both libQGLViewer and OpenMesh in Release mode,
+and in the configuration of this framework, change the library filenames to
+`libOpenMeshCore.lib` and `libQGLViewer2.dll`, respectively.
 
 ## Changes
 
