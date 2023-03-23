@@ -82,14 +82,14 @@ but it should work with other configurations, as well.
    - `QGLVIEWER_INCLUDE_DIR` : should be set to the libQGLViewer source directory
      (something like `libQGLViewer-2.9.1`)
    
-   - `QGLVIEWER_LIBRARY` : should be set to the full path to the `libQGLViewerd2.dll` file
+   - `QGLVIEWER_LIBRARY` : should be set to the full path to the `QGLViewerd2.dll` file
      (which was generated in the `QGLViewer` subdirectory of the libQGLViewer *source*)
 
    Re-configure and build.
 
 To generate a release build, compile both libQGLViewer and OpenMesh in Release mode,
 and in the configuration of this framework, change the library filenames to
-`libOpenMeshCore.dll` and `libQGLViewer2.dll`, respectively.
+`libOpenMeshCore.dll` and `QGLViewer2.dll`, respectively.
 
 ## Changes
 
