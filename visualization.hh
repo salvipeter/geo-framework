@@ -1,5 +1,13 @@
 #pragma once
 
+#if !defined(APIENTRY) && defined(WIN32)
+#define APIENTRY __stdcall
+#endif
+
+#if !defined(WINGDIAPI)
+#define WINGDIAPI
+#endif
+
 #include <GL/gl.h>
 
 #include "base-mesh.hh"

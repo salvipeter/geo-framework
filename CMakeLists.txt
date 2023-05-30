@@ -32,7 +32,7 @@ set(geo_HEADERS # headers processed by MOC
 set(CMAKE_AUTORCC ON)
 qt6_wrap_cpp(geo_HEADERS_MOC ${geo_HEADERS})
 
-add_definitions(${Qt6Widgets_DEFINITIONS})
+add_definitions(${Qt6Widgets_DEFINITIONS} -D_USE_MATH_DEFINES)
 
 if(WITH_JET_FITTING)
   add_definitions(-DUSE_JET_FITTING)
