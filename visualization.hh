@@ -1,7 +1,11 @@
 #pragma once
 
-#ifdef _WIN32
-#include <windows.h>
+#if !defined(APIENTRY) && defined(WIN32)
+#define APIENTRY __stdcall
+#endif
+
+#if !defined(WINGDIAPI)
+#define WINGDIAPI
 #endif
 
 #include <GL/gl.h>
