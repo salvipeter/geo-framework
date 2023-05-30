@@ -7,3 +7,4 @@ debug
 release
 CMake*
 TAGS
+.vs*
