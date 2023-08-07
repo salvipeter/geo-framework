@@ -91,7 +91,60 @@ To generate a release build, compile both libQGLViewer and OpenMesh in Release m
 and in the configuration of this framework, change the library filenames to
 `libOpenMeshCore.dll` and `QGLViewer2.dll`, respectively.
 
-## Changes
+## Notes on adding new object types
+
+A common use-case is to add a new object type that can be (i) read
+from file, and (ii) triangulated to form a mesh. By default it will
+compute normal vectors and curvatures approximated from the underlying
+mesh, but these can be overridden.
+
+Bézier surfaces are supplied as an example, new object types are to be
+created in a similar fashion:
+
+1. Create a new class that inherits from Object.
+
+1. Override the triangulating function `updateBaseMesh()`: this is the
+main function, where a mesh representation of the surface should be
+created. The variable for this is called `mesh`. Also, at the end of
+the function, you should call `Object::updateBaseMesh(false, false)`.
+Supply `true` arguments when you have special handlers for the normal
+or mean curvature, respectively.
+
+1. Optionally override the `normal()` and/or `meanCurvature()`
+   functions.
+
+1. Override the main drawing function `draw()`; the surface itself is
+drawn based on the triangulation; here you should only draw extra
+things, such as the control points etc.
+
+1. Override the file input function `reload()`; it loads the file
+given in the `filename` variable. In the end of the function, you
+should call `updateBaseMesh()` to generate the surface.
+
+1. In `Window::open()`, add your own file format to the list of
+   extensions.
+
+1. In `Viewer::open()`, add a conditional of the type
+
+```c++
+    else if (filename.ends_with(".your_extension"))
+      surface = std::make_shared<YourObjectType>(filename);
+```
+so that your class will be invoked when a file of the added type is opened.
+(Naturally the `YourObjectType.hh` header should also be included.)
+
+1. Override the modification functions:
+
+   - `drawWithNames()`: Here you should draw only those things that
+     you can click on (e.g. control points). Each object is associated
+     with a name (an integer).
+
+   - `postSelection()`: returns the position of the selected object
+     (`selected` is the name of the object the user clicked on)
+
+   - `movement()`: sets the position of the selected object
+
+## Changes compared to [sample framework](https://github.com/salvipeter/sample-framework)
 
 Added features:
 
