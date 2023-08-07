@@ -126,12 +126,12 @@ should call `updateBaseMesh()` to generate the surface.
 
 1. In `Viewer::open()`, add a conditional of the type
 
-```c++
-    else if (filename.ends_with(".your_extension"))
-      surface = std::make_shared<YourObjectType>(filename);
-```
-so that your class will be invoked when a file of the added type is opened.
-(Naturally the `YourObjectType.hh` header should also be included.)
+   ```c++
+   else if (filename.ends_with(".your_extension"))
+     surface = std::make_shared<YourObjectType>(filename);
+   ```
+   so that your class will be invoked when a file of the added type is opened.
+   (Naturally the `YourObjectType.hh` header should also be included.)
 
 1. Override the modification functions:
 
