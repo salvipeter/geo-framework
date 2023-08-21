@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.20)
 project(geo-framework)
 
 option(WITH_JET_FITTING "Use jet fitting for normals" OFF)
