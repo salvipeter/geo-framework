@@ -112,7 +112,7 @@ void Bezier::updateBaseMesh() {
 bool Bezier::reload() {
   size_t n, m;
   try {
-    std::ifstream f(filename.c_str());
+    std::ifstream f(filename);
     f.exceptions(std::ios::failbit | std::ios::badbit);
     f >> n >> m;
     degree[0] = n++; degree[1] = m++;

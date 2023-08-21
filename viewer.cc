@@ -252,6 +252,24 @@ void Viewer::keyPressEvent(QKeyEvent *e) {
       vis.show_wireframe = !vis.show_wireframe;
       update();
       break;
+    case Qt::Key_X:
+      camera()->setViewDirection(qglviewer::Vec(1.0, 0.0, 0.0));
+      camera()->setUpVector(qglviewer::Vec(0.0, 1.0, 0.0));
+      camera()->showEntireScene();
+      update();
+      break;
+    case Qt::Key_Y:
+      camera()->setViewDirection(qglviewer::Vec(0.0, 1.0, 0.0));
+      camera()->setUpVector(qglviewer::Vec(0.0, 0.0, 1.0));
+      camera()->showEntireScene();
+      update();
+      break;
+    case Qt::Key_Z:
+      camera()->setViewDirection(qglviewer::Vec(0.0, 0.0, 1.0));
+      camera()->setUpVector(qglviewer::Vec(1.0, 0.0, 0.0));
+      camera()->showEntireScene();
+      update();
+      break;
     default:
       QGLViewer::keyPressEvent(e);
     }
@@ -330,6 +348,7 @@ QString Viewer::helpString() const {
                "<li>&nbsp;C: Toggle control polygon visualization</li>"
                "<li>&nbsp;S: Toggle solid (filled polygon) visualization</li>"
                "<li>&nbsp;W: Toggle wireframe visualization</li>"
+               "<li>&nbsp;X/Y/Z: Set standard view direction</li>"
                "</ul>"
                "<p>There is also a simple selection and movement interface, enabled "
                "only when the wireframe/controlnet is displayed: a mesh vertex can be selected "
