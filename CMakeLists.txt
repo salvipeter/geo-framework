@@ -42,6 +42,7 @@ include_directories(
   .
   ${CGAL_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
+  ${OPENGL_INCLUDE_DIR}
   ${OPENMESH_INCLUDE_DIR}
   ${Qt6OpenGL_INCLUDE_DIRS}
   ${Qt6Widgets_INCLUDE_DIRS}

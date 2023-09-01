@@ -8,7 +8,11 @@
 #define WINGDIAPI
 #endif
 
+#if __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 #include "base-mesh.hh"
 

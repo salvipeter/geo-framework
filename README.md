@@ -14,7 +14,7 @@ and read the documentation of the various libraries (see "Dependencies" below).
 Dependencies:
 
 - C++20
-- [CMake](https://cmake.org/) >= 3.2
+- [CMake](https://cmake.org/) >= 3.20
 - [libQGLViewer](http://www.libqglviewer.com/) >= 2.9
 - [OpenMesh](http://www.openmesh.org/) >= 8.1
 - [Qt](http://qt-project.org/) >= 6.4
@@ -90,6 +90,22 @@ but it should work with other configurations, as well.
 To generate a release build, compile both libQGLViewer and OpenMesh in Release mode,
 and in the configuration of this framework, change the library filenames to
 `libOpenMeshCore.dll` and `QGLViewer2.dll`, respectively.
+
+### MacOS
+
+1. Download *OpenMesh*, *Qt6* and *libQGLViewer*.
+
+1. Compile *OpenMesh* with *CMake*, with the `BUILD_APPS` variable set to `OFF`.
+
+1. Compile *libQGLViewer* with *Qt Creator* (similarly as in Windows).
+
+1. Finally, compile this project with *CMake*. Note the following settings:
+
+   - `OPENMESH_LIBRARY_DEBUG`: `<OpenMesh build path>/Build/lib/libOpenMeshCore.dylib`
+
+   - `Qt6_DIR`: `<Qt6 install dir>/<version>/macos/lib/cmake/Qt6`
+
+   - `QGLVIEWER_LIBRARY_DEBUG`: `<libQGLViewer source path>/QGLViewer/QGLViewer.framework`
 
 ## Notes on adding new object types
 
