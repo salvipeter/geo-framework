@@ -101,11 +101,18 @@ and in the configuration of this framework, change the library filenames to
 
 1. Finally, compile this project with *CMake*. Note the following settings:
 
-   - `OPENMESH_LIBRARY_DEBUG`: `<OpenMesh build path>/Build/lib/libOpenMeshCore.dylib`
+   - `OPENMESH_LIBRARY_DEBUG`: *<OpenMesh build path>*`/Build/lib/libOpenMeshCore.dylib`
 
-   - `Qt6_DIR`: `<Qt6 install dir>/<version>/macos/lib/cmake/Qt6`
+   - `Qt6_DIR`: *<Qt6 install dir>*`/<version>/macos/lib/cmake/Qt6`
 
-   - `QGLVIEWER_LIBRARY_DEBUG`: `<libQGLViewer source path>/QGLViewer/QGLViewer.framework`
+   - `QGLVIEWER_LIBRARY_DEBUG`: *<libQGLViewer source path>*`/QGLViewer/QGLViewer.framework`
+
+Since the libQGLViewer framework is local, you should put a symlink beside the executable
+for it to work, i.e.
+
+```bash
+[/path/to/geo-framework/build] ln -s <libQGLViewer source path>/QGLViewer/QGLViewer.framework .
+```
 
 ## Notes on adding new object types
 
