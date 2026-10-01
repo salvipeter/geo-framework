@@ -381,8 +381,11 @@ void Viewer::updateMeanMinMax() {
 
   std::sort(mean.begin(), mean.end());
   size_t k = (double)n * vis.cutoff_ratio;
-  vis.mean_min = std::min(mean[k ? k-1 : 0], 0.0);
-  vis.mean_max = std::max(mean[k ? n-k : n-1], 0.0);
+  auto neg = std::min(mean[k ? k-1 : 0], 0.0);
+  auto pos = std::max(mean[k ? n-k : n-1], 0.0);
+  auto max = std::max(-neg, pos);
+  vis.mean_min = -max;
+  vis.mean_max = max;
 }
 
 void Viewer::setupCamera() {
