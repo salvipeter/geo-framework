@@ -8,11 +8,13 @@ if(NOT Qt6_FOUND)
 endif()
 
 find_path(QGLVIEWER_INCLUDE_DIR qglviewer.h
+  PATHS
     /usr/include/QGLViewer
     /opt/local/include/QGLViewer
     /usr/local/include/QGLViewer
     /sw/include/QGLViewer
     ENV QGLVIEWERROOT
+  PATH_SUFFIXES include/QGLViewer
   )
 
 find_library(QGLVIEWER_LIBRARY_RELEASE
