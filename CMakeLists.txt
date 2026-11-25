@@ -6,10 +6,6 @@ option(WITH_JET_FITTING "Use jet fitting for normals" OFF)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(OpenGL_GL_PREFERENCE LEGACY)
 
-if(WITH_JET_FITTING)
-  find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-  find_package(CGAL REQUIRED NO_MODULE)
-endif(WITH_JET_FITTING)
 find_package(OpenGL REQUIRED)
 find_package(OpenMesh REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core OpenGL OpenGLWidgets Widgets Xml)
@@ -41,7 +37,6 @@ endif()
 include_directories(
   .
   ${CGAL_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIR}
   ${OPENMESH_INCLUDE_DIR}
   ${Qt6OpenGL_INCLUDE_DIRS}
@@ -83,4 +78,14 @@ target_link_libraries(geo-framework PUBLIC
   Qt6::Widgets
   Qt6::Xml
   ${QGLVIEWER_LIBRARY}
+  gmp)
+
+if(WITH_JET_FITTING)
+  find_package(Eigen3 REQUIRED NO_MODULE)
+  find_package(CGAL REQUIRED NO_MODULE)
+
+  target_link_libraries(geo-framework PRIVATE
+    Eigen3::Eigen
+    CGAL::CGAL
   )
+endif()
